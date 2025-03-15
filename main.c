@@ -12,6 +12,7 @@
 #define SDL_MAIN_USE_CALLBACKS 1  /* use the callbacks instead of main() */
 #include <SDL3/SDL.h>
 #include <SDL3/SDL_main.h>
+#include <stdio.h>
 
 static SDL_Window *window = NULL;
 static SDL_Renderer *renderer = NULL;
@@ -20,7 +21,7 @@ static SDL_Renderer *renderer = NULL;
 SDL_AppResult SDL_AppInit(void **appstate, int argc, char *argv[])
 {
     /* Create the window */
-    if (!SDL_CreateWindowAndRenderer("Hello World", 800, 600, SDL_WINDOW_FULLSCREEN, &window, &renderer)) {
+    if (!SDL_CreateWindowAndRenderer("Hello World", 320, 240, 0, &window, &renderer)) {
         SDL_Log("Couldn't create window and renderer: %s", SDL_GetError());
         return SDL_APP_FAILURE;
     }
@@ -43,7 +44,7 @@ SDL_AppResult SDL_AppIterate(void *appstate)
     const char *message = "Hello World!";
     int w = 0, h = 0;
     float x, y;
-    const float scale = 4.0f;
+    const float scale = 2.0f;
 
     /* Center the message and scale it up */
     SDL_GetRenderOutputSize(renderer, &w, &h);
