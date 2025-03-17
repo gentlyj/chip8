@@ -47,9 +47,8 @@ uint8_t V[CHIP8_REGISTER_COUNT]; // 16 registers, V0-VF. VF is the carry flag.
 uint16_t I;  // Index register. Used to store memory addresses.
 uint16_t PC; // Program counter. Used to store the address of the next
              // instruction to be executed.
-uint8_t frame_buffer[CHIP_SCREEN_HEIGHT]
-                    [CHIP_SCREEN_WIDTH]; // 64x32 pixels. 1 bit per pixel. 0 is
-                                         // black, 1 is white.
+uint8_t frame_buffer[CHIP8_SCREEN_HEIGHT][CHIP8_SCREEN_WIDTH];
+
 uint8_t delay_timer; // 8-bit timer. Decrements at a rate of 60Hz.
 uint8_t sound_timer; // 8-bit timer. Beeps when it reaches 0. Decrements at a
                      // rate of 60Hz.
@@ -90,7 +89,7 @@ void chip8_init()
     srand(time(NULL)); // Seed the random number generator.
 }
 
-void chip8_loadgame(char *game)
+void chip8_load_game(const char *game)
 {
     FILE *fgame;
 
@@ -284,32 +283,32 @@ void chip8_emulate_cycle()
         PC += 2;                     // Increment the program counter by 2.
         break;
     case 0xD000:
-    #if 0
+#if 0
         draw_sprite(V[x], V[y], n); // Draw a sprite at location (Vx, Vy) with a
                                     // height of n.
-    #endif
-        PC += 2;                    // Increment the program counter by 2.
-        draw_flag = true;           // Set the draw flag to true.
+#endif
+        PC += 2;          // Increment the program counter by 2.
+        draw_flag = true; // Set the draw flag to true.
         break;
     case 0xE000: // Ex9E - SKP Vx - Skip next instruction if key with the value
                  // of Vx is pressed .
         switch (kk)
-            {
-            case 0x9E: // Ex9E - SKP Vx - Skip next instruction if key with the
-                       // value of Vx is pressed.
-                if (keypad[V[x]] == 1)
-                {            // If the key with the value of Vx is pressed.
-                    PC += 2; // Increment the program counter by 2.
-                }
-                break;
-            case 0xA1: // ExA1 - SKNP Vx - Skip next instruction if key with the
-                       // value of Vx is not pressed.
-                if (keypad[V[x]] == 0)
-                {            // If the key with the value of Vx is not pressed.
-                    PC += 2; // Increment the program counter by 2.
-                }
-                break;
+        {
+        case 0x9E: // Ex9E - SKP Vx - Skip next instruction if key with the
+                   // value of Vx is pressed.
+            if (keypad[V[x]] == 1)
+            {            // If the key with the value of Vx is pressed.
+                PC += 2; // Increment the program counter by 2.
             }
+            break;
+        case 0xA1: // ExA1 - SKNP Vx - Skip next instruction if key with the
+                   // value of Vx is not pressed.
+            if (keypad[V[x]] == 0)
+            {            // If the key with the value of Vx is not pressed.
+                PC += 2; // Increment the program counter by 2.
+            }
+            break;
+        }
         break;
     case 0xF000: // Fx07 - LD Vx, DT - Set Vx = delay timer value.
         switch (kk)
@@ -399,14 +398,18 @@ void chip8_emulate_cycle()
     }
 }
 
-void chip8_tick(){
-    if (delay_timer > 0) {
-        --delay_timer;// Decrement the delay timer. 
+void chip8_tick()
+{
+    if (delay_timer > 0)
+    {
+        --delay_timer; // Decrement the delay timer.
     }
-    if (sound_timer > 0) {
+    if (sound_timer > 0)
+    {
         --sound_timer; // Decrement the sound timer.
-        if(sound_timer == 0){
-            // TODO: Beep! 
-        } 
+        if (sound_timer == 0)
+        {
+            // TODO: Beep!
+        }
     }
 }
